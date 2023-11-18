@@ -1,5 +1,5 @@
 import { useState } from 'react';
-// import axios from 'axios';
+import axios from 'axios';
 
 
 export default function Home() {
@@ -17,7 +17,8 @@ export default function Home() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post('YOUR_ENDPOINT_URL', formData);
+      //call api/submit
+      const response = await axios.post('http://localhost:3000/api/submit', formData);
       console.log(response.data);
       // Handle response...
     } catch (error) {
