@@ -1,0 +1,18 @@
+Parse the following user input into a JSON object representing their availability from Monday to Sunday, with time intervals between 8 AM and 8 PM in 3-hour intervals. Each interval should be represented as either true or false for availability. In this instance, set all intervals to false. Assume they are not available by default at a specific time unless mentioned. Only respond with a JSON string containing the availability.
+
+User Input:
+"I am usually free on weekday evenings after 6 PM and all day on weekends."
+
+Expected JSON Format:
+
+
+{
+  "Monday": {
+    "8:00 AM": false,
+    "11:00 AM": false,
+    "2:00 PM": false,
+    "5:00 PM": false,
+    "8:00 PM": false
+  },
+  // Continue for each day of the week with the same structure
+}

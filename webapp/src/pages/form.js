@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import axios from 'axios';
 
 const questions = [
     { key: 'email', label: 'What is your email?', type: 'email' },
@@ -28,7 +29,7 @@ class Form extends Component {
         document.body.style.backgroundImage = `linear-gradient(270deg, ${backgroundColors.join(', ')})`;
         document.body.style.backgroundSize = '400% 400%';
         document.body.style.animation = `flowBackground 15s ease infinite`;
-      }
+    }
 
     componentDidUpdate(prevProps, prevState) {
         if (prevState.backgroundColorIndex !== this.state.backgroundColorIndex) {
@@ -44,25 +45,26 @@ class Form extends Component {
     applyBackground = (index) => {
         // Change the animation to a faster speed temporarily
         document.body.style.animation = `flowBackground 5s ease infinite`;
-      
+
         // After a short delay, revert back to the original speed
         setTimeout(() => {
-          document.body.style.animation = `flowBackground 15s ease infinite`;
+            document.body.style.animation = `flowBackground 15s ease infinite`;
         }, 5000); // Adjust the timing as needed
-      };
-      
-      
+    };
+
+
     handleNextQuestion = (e) => {
         e.preventDefault();
         const { currentQuestionIndex, formData, backgroundColorIndex } = this.state;
-        if (currentQuestionIndex < questions.length - 1) {
+        if (this.state.currentQuestionIndex < questions.length - 1) {
             this.setState({
-                currentQuestionIndex: currentQuestionIndex + 1,
-                backgroundColorIndex: (backgroundColorIndex + 1) % backgroundColors.length,
+                currentQuestionIndex: this.state.currentQuestionIndex + 1,
+                backgroundColorIndex: (this.state.backgroundColorIndex + 1) % backgroundColors.length,
             });
         } else {
             // All questions answered, handle form submission here
-            console.log(formData); // Here you'd typically send the data to a server
+            //call api/submit
+            const response = axios.post('http://localhost:3000/api/submit', formData);
         }
         this.applyBackground(this.state.backgroundColorIndex);
     };
@@ -81,10 +83,15 @@ class Form extends Component {
     };
 
     handleBlur = (e) => {
-        if (e.target) {
-            e.target.style.transition = 'height 0.3s ease'; // Add this line for a smooth transition
-            e.target.style.height = '50px'; // Shrink the textarea when not focused
-        }
+        setTimeout(() => {
+            // Check if the active element is the submit button
+            if (document.activeElement.type !== "submit") {
+                if (e.target) {
+                    e.target.style.transition = 'height 0.3s ease';
+                    e.target.style.height = '50px'; // Shrink the textarea when not focused
+                }
+            }
+        }, 0);
     };
 
     render() {
@@ -93,6 +100,7 @@ class Form extends Component {
 
         return (
             <div className="container d-flex justify-content-center align-items-center vh-100 text-center">
+                
                 <AnimatePresence mode='wait'>
                     <motion.form
                         key={currentQuestion.key}
