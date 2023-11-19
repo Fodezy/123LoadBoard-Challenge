@@ -55,7 +55,6 @@ const FeaturesSection = () => (
       
       <div className="text-center mt-5">
        
-        <hr></hr>
         <br></br>
         <a href='/form' className="btn btn-primary btn-lg">Start</a>
       </div>
