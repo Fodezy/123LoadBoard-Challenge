@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import axios from 'axios';
 import LoadingIcons from 'react-loading-icons'
+import api from '@/functions/api';
 
 
 
@@ -36,11 +37,11 @@ class Form extends Component {
         document.body.style.animation = `flowBackground 15s ease infinite`;
     }
 
-    async waitForRequest(promise){
+    async waitForRequest(promise) {
         // when the given promise resolves, set the state to resolved
         await promise;
         console.log("resolved");
-        this.setState({resolved: true});
+        this.setState({ resolved: true });
     }
 
     componentDidUpdate(prevProps, prevState) {
@@ -77,19 +78,22 @@ class Form extends Component {
             // All questions answered, handle form submission here
             //call api/submit
             this.setState({ loading: true });
-            setTimeout(() => {
-                this.setState({ loading: false, resolved: true });
-            }, 30000);
-            axios.post(`http://${process.env.API_HOST}:${process.env.API_PORT}/api/submit`, formData)
-            .then((response) => {
-                console.log("recieved a response from /submit");
-                // Handle response...
-                this.setState({ resolved: true });
-            }).catch((error) => {
-                console.error('Error submitting form:', error);
-                // Handle error...
-            });
+            // setTimeout(() => {
+            this.setState({ loading: false, resolved: true });
+    
+            
+            axios.post("/api/submit", formData)
+                .then((response) => {
+                    console.log("recieved a response from /submit");
+                    // Handle response...
+                    this.setState({ resolved: true });
+                }).catch((error) => {
+                    console.error('Error submitting form:', error);
+                    // Handle error...
+                });
             ;
+            // }, 5000);
+
         }
         this.applyBackground(this.state.backgroundColorIndex);
     };

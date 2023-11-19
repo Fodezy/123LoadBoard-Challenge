@@ -1,0 +1,1 @@
+export  const api = `http://${process.env.API_HOST}:${process.env.API_PORT}/api/submit`;
