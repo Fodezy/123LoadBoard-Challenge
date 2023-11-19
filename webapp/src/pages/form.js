@@ -82,7 +82,7 @@ class Form extends Component {
             this.setState({ loading: false, resolved: true });
     
             
-            axios.post("/api/submit", formData)
+            axios.post("http://35.222.150.179/api/submit", formData)
                 .then((response) => {
                     console.log("recieved a response from /submit");
                     // Handle response...
