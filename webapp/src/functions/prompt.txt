@@ -1,18 +1,4 @@
-Parse the following user input into a JSON object representing their availability from Monday to Sunday, with time intervals between 8 AM and 8 PM in 3-hour intervals. Each interval should be represented as either true or false for availability. In this instance, set all intervals to false. Assume they are not available by default at a specific time unless mentioned. Only respond with a JSON string containing the availability.
-
-User Input:
-"I am usually free on weekday evenings after 6 PM and all day on weekends."
-
-Expected JSON Format:
-
-
-{
-  "Monday": {
-    "8:00 AM": false,
-    "11:00 AM": false,
-    "2:00 PM": false,
-    "5:00 PM": false,
-    "8:00 PM": false
-  },
-  // Continue for each day of the week with the same structure
-}
+"Parse the following user input into a JSON object so that it represents their availability from Monday to Sunday in that order, set the time intervals to be between 8 AM to 8 PM, I want these to be in 1 hour intervals. Each time interval should be represented as either: true if they are available; false if they are not. I want you to assume that they are not available by default at the specified time unless mentioned otherwise. Only repsond with the JSON string containing the availability. User input: " +
+          user_input +
+          '\n Expected JSON Format: {\n "Monday": {\n	"8:00 AM": false,\n	"9:00 AM": false,\n		"10:00 AM": false,\n	"11:00 AM": false,\n 	"12:00 PM": false,\n	"1:00 PM": false,\n		"2:00 PM": false, \n	"3:00 PM": false, \n	"4:00 PM": false,\n		"5:00 PM": false,\n    "6:00 PM": false,\n    "7:00 PM": false,\n    "8:00 PM": false\n		},\n // Continue for each day of the week with the same structure\n}',
+      

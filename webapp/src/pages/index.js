@@ -1,53 +1,51 @@
-import { useState } from 'react';
-import axios from 'axios';
+import React from 'react';
 
+const HeroSection = () => (
+  <section id="hero" className="text-center py-3">
+    <h1 className="display-4 ">Squash No Friends</h1>
+    <p className="lead">Find a McGill Squash Buddy</p>
+    
+  </section>
+);
 
-export default function Home() {
-  const [formData, setFormData] = useState({
-    email: '',
-    name: '',
-    skill: '',
-    availability: '', // Initialize as a JSON string
-  });
-
-  const handleInputChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
-  };
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    try {
-      //call api/submit
-      const response = await axios.post('http://localhost:3000/api/submit', formData);
-      console.log(response.data);
-      // Handle response...
-    } catch (error) {
-      console.error('Error submitting form:', error);
-      // Handle error...
-    }
-  };
-
-  return (
-    <div className="container d-flex justify-content-center align-items-center vh-100">
-      <form onSubmit={handleSubmit} className="w-50">
-        <div className="mb-3">
-          <label htmlFor="email" className="form-label">Email</label>
-          <input type="email" className="form-control" id="email" name="email" value={formData.email} onChange={handleInputChange} required />
-        </div>
-        <div className="mb-3">
-          <label htmlFor="name" className="form-label">Name</label>
-          <input type="text" className="form-control" id="name" name="name" value={formData.name} onChange={handleInputChange} />
-        </div>
-        <div className="mb-3">
-          <label htmlFor="skill" className="form-label">Skill</label>
-          <input type="text" className="form-control" id="skill" name="skill" value={formData.skill} onChange={handleInputChange} />
-        </div>
-        <div className="mb-3">
-          <label htmlFor="availability" className="form-label">Availability (JSON)</label>
-          <textarea className="form-control" id="availability" name="availability" value={formData.availability} onChange={handleInputChange} />
-        </div>
-        <button type="submit" className="btn btn-primary">Submit</button>
-      </form>
+const FeaturesSection = () => (
+  <section id="features" className="mt-5">
+    <div className="container">
+      <div className="text-center mt-4">
+        <p>We use AI to pair you with a partner when you're both free.</p>
+        <a href='/form' className="btn btn-primary btn-lg">Start</a>
+      </div>
     </div>
-  );
-}
+  </section>
+);
+
+const TestimonialsSection = () => (
+  <section id="testimonials" className="bg-light py-5">
+    <div className="container">
+      <h2 className="text-center mb-4">Testimonials</h2>
+      <blockquote className="blockquote text-center">
+        "This service is amazing!" - John Doe
+      </blockquote>
+      <blockquote className="blockquote text-center">
+        "I highly recommend it." - Jane Smith
+      </blockquote>
+    </div>
+  </section>
+);
+
+const Footer = () => (
+  <footer className="bg-dark text-white text-center py-3">
+    <p>&copy; 2023 Your Company Name</p>
+  </footer>
+);
+
+const LandingPage = () => (
+  <div>
+    <HeroSection />
+    <FeaturesSection />
+    {/* <TestimonialsSection />
+    <Footer /> */}
+  </div>
+);
+
+export default LandingPage;

@@ -9,7 +9,7 @@ import LoadingIcons from 'react-loading-icons'
 const questions = [
     { key: 'email', label: 'What is your email?', type: 'email', area: 'false' },
     { key: 'name', label: 'What is your name?', type: 'text', area: 'false' },
-    { key: 'availability', label: 'What are your available days?', type: 'text', area: 'true' },
+    { key: 'availability', label: 'What is your general weekly availability?', type: 'text', area: 'true' },
 ];
 const backgroundColors = ['#ff9a9e', '#ffb5b0', '#ffc1b6', '#ffcabf', '#ffd3c9']; // Add more colors as needed
 
@@ -34,6 +34,13 @@ class Form extends Component {
         document.body.style.backgroundImage = `linear-gradient(270deg, ${backgroundColors.join(', ')})`;
         document.body.style.backgroundSize = '400% 400%';
         document.body.style.animation = `flowBackground 15s ease infinite`;
+    }
+
+    async waitForRequest(promise){
+        // when the given promise resolves, set the state to resolved
+        await promise;
+        console.log("resolved");
+        this.setState({resolved: true});
     }
 
     componentDidUpdate(prevProps, prevState) {
@@ -70,6 +77,9 @@ class Form extends Component {
             // All questions answered, handle form submission here
             //call api/submit
             this.setState({ loading: true });
+            setTimeout(() => {
+                this.setState({ loading: false, resolved: true });
+            }, 30000);
             axios.post('http://localhost:3000/api/submit', formData)
             .then((response) => {
                 console.log("recieved a response from /submit");
@@ -149,10 +159,12 @@ class Form extends Component {
                         {this.state.loading ? (
                             <div>
                                 <LoadingIcons.Bars />
+                                <p className='text-muted'>connecting to OpenAI</p>
                             </div>
                         ) : this.state.resolved ? (
                             <div className="confirmation-message">
-                                Your submission has been successfully processed!
+                                <h5>Your submission has been successfully processed!</h5>
+                                <p>Check for a matchup email from SquashNoFriends soon</p>
                             </div>
                         ) : (
                             <motion.div className="form-group">

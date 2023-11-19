@@ -34,7 +34,7 @@ export default async function handler(req, res) {
         con.end();
     } catch (error) {
         console.error("Error in handler: ", error);
-        con.end();
+        // con.end();
         res.status(500).json({ status: 'error', message: 'Internal Server Error' });
     } finally {
         // Close the database connection
