@@ -1,12 +1,15 @@
 import React, { Component } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import axios from 'axios';
+import LoadingIcons from 'react-loading-icons'
+
+
+
 
 const questions = [
-    { key: 'email', label: 'What is your email?', type: 'email' },
-    { key: 'name', label: 'What is your name?', type: 'text' },
-    { key: 'skill', label: 'What is your skill level?', type: 'text' },
-    { key: 'availability', label: 'What are your available days?', type: 'text' },
+    { key: 'email', label: 'What is your email?', type: 'email', area: 'false' },
+    { key: 'name', label: 'What is your name?', type: 'text', area: 'false' },
+    { key: 'availability', label: 'What are your available days?', type: 'text', area: 'true' },
 ];
 const backgroundColors = ['#ff9a9e', '#ffb5b0', '#ffc1b6', '#ffcabf', '#ffd3c9']; // Add more colors as needed
 
@@ -22,6 +25,8 @@ class Form extends Component {
         },
         backgroundColorIndex: 0,
         focused: null, // Track the focused input
+        loading: false,
+        resolved: false,
     };
     componentDidMount() {
         this.applyBackground(this.state.backgroundColorIndex);
@@ -64,7 +69,17 @@ class Form extends Component {
         } else {
             // All questions answered, handle form submission here
             //call api/submit
-            const response = axios.post('http://localhost:3000/api/submit', formData);
+            this.setState({ loading: true });
+            axios.post('http://localhost:3000/api/submit', formData)
+            .then((response) => {
+                console.log("recieved a response from /submit");
+                // Handle response...
+                this.setState({ resolved: true });
+            }).catch((error) => {
+                console.error('Error submitting form:', error);
+                // Handle error...
+            });
+            ;
         }
         this.applyBackground(this.state.backgroundColorIndex);
     };
@@ -79,7 +94,15 @@ class Form extends Component {
         if (e.target) {
             e.target.style.transition = 'height 0.3s ease'; // Add this line for a smooth transition
             e.target.style.height = '150px'; // Grow the textarea when focused
+            //change the placeholder text
+            e.target.placeholder = "Ex: I work from 8am-2 on weekdays and 4-6 on weekends. I also go to church Sunday mornings but am free otherwise...";
         }
+    };
+    handleFocusNoGrow = (e) => {
+        // if (e.target) {
+        //     e.target.style.transition = 'height 0.3s ease'; // Add this line for a smooth transition
+        //     // e.target.style.height = '150px'; // Grow the textarea when focused
+        // }
     };
 
     handleBlur = (e) => {
@@ -87,11 +110,24 @@ class Form extends Component {
             // Check if the active element is the submit button
             if (document.activeElement.type !== "submit") {
                 if (e.target) {
+                    //change placeholder text
+                    e.target.placeholder = "";
                     e.target.style.transition = 'height 0.3s ease';
                     e.target.style.height = '50px'; // Shrink the textarea when not focused
                 }
             }
         }, 0);
+    };
+    handleBlurNoGrow = (e) => {
+        // setTimeout(() => {
+        //     // Check if the active element is the submit button
+        //     if (document.activeElement.type !== "submit") {
+        //         if (e.target) {
+        //             e.target.style.transition = 'height 0.3s ease';
+        //             e.target.style.height = '50px'; // Shrink the textarea when not focused
+        //         }
+        //     }
+        // }, 0);
     };
 
     render() {
@@ -100,7 +136,7 @@ class Form extends Component {
 
         return (
             <div className="container d-flex justify-content-center align-items-center vh-100 text-center">
-                
+
                 <AnimatePresence mode='wait'>
                     <motion.form
                         key={currentQuestion.key}
@@ -110,31 +146,65 @@ class Form extends Component {
                         transition={{ duration: 0.5 }}
                         onSubmit={this.handleNextQuestion}
                     >
-                        <motion.div className="form-group">
-                            <label htmlFor={currentQuestion.key}>{currentQuestion.label}</label>
-                            <br />
-                            <br />
-                            <motion.textarea
-                                type={currentQuestion.type}
-                                className="form-control"
-                                id={currentQuestion.key}
-                                name={currentQuestion.key}
-                                value={formData[currentQuestion.key]}
-                                onChange={this.handleChange}
-                                onFocus={this.handleFocus}
-                                onBlur={this.handleBlur}
-                                animate={focused === currentQuestion.key ? { scale: 1.3 } : { scale: 1 }} // Enlarges when focused
-                                transition={{ type: 'spring', stiffness: 300 }}
-                                style={{ height: '50px' }} // Default height
-                                required
-                                autoComplete="off"
-                            />
+                        {this.state.loading ? (
+                            <div>
+                                <LoadingIcons.Bars />
+                            </div>
+                        ) : this.state.resolved ? (
+                            <div className="confirmation-message">
+                                Your submission has been successfully processed!
+                            </div>
+                        ) : (
+                            <motion.div className="form-group">
+                                <h3>
+                                    <label htmlFor={currentQuestion.key}>{currentQuestion.label}</label>
+                                </h3>
+                                <br />
+                                <br />
 
-                        </motion.div>
+                                {currentQuestion.area === 'true' ? (
+                                    <motion.textarea
+                                        type={currentQuestion.type}
+                                        className="form-control"
+                                        id={currentQuestion.key}
+                                        name={currentQuestion.key}
+                                        value={formData[currentQuestion.key]}
+                                        onChange={this.handleChange}
+                                        onFocus={this.handleFocus}
+                                        onBlur={this.handleBlur}
+                                        animate={focused === currentQuestion.key ? { scale: 1.3 } : { scale: 1 }} // Enlarges when focused
+                                        transition={{ type: 'spring', stiffness: 300 }}
+                                        style={{ height: '50px' }} // Default height
+                                        required
+                                        autoComplete="off"
+                                    />
+                                ) : (
+                                    <motion.input
+                                        type={currentQuestion.type}
+                                        className="form-control"
+                                        id={currentQuestion.key}
+                                        name={currentQuestion.key}
+                                        value={formData[currentQuestion.key]}
+                                        onChange={this.handleChange}
+                                        onFocus={this.handleFocusNoGrow}
+                                        onBlur={this.handleBlurNoGrow}
+                                        animate={focused === currentQuestion.key ? { scale: 1.3 } : { scale: 1 }} // Enlarges when focused
+                                        transition={{ type: 'spring', stiffness: 300 }}
+                                        style={{ height: '40px' }} // Default height
+                                        required
+                                        autoComplete="off"
+                                    />
+                                )}
+                            </motion.div>
+                        )}
+
                         <br />
-                        <motion.button className="btn btn-primary" type="submit">
-                            {currentQuestionIndex === questions.length - 1 ? 'Submit' : 'Next'}
-                        </motion.button>
+                        {
+                            !this.state.loading && !this.state.resolved ?
+                                <motion.button className="btn btn-primary" type="submit">
+                                    {currentQuestionIndex === questions.length - 1 ? 'Submit' : 'Next'}
+                                </motion.button> : <></>
+                        }
                     </motion.form>
                 </AnimatePresence>
             </div>
