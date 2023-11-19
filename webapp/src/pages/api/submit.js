@@ -9,7 +9,13 @@ export default async function handler(req, res) {
         const con = dbconnect('34.42.173.231', 'root', 'BIUouwbwi739372');
 
         // Get the form data
-        const { email, name, skill, availability } = req.body;
+        const { email, name, availability } = req.body;
+
+        // check if all fields are filled
+        if (!email || !name || !availability) {
+            return res.status(400).json({ status: 'error', message: 'Please fill all fields' });
+        }
+
 
         // Parse the availability using GPT
         // console.log("Gonna parse availability");
@@ -19,7 +25,7 @@ export default async function handler(req, res) {
         console.log("Gonna insert into database");
 
         // Insert the form data into the database
-        const q = `INSERT INTO submissions (email, availability, name, skill) VALUES (?, ?, ?, ?)`;
+        const q = `INSERT INTO submissions_prod (email, availability, name, skill) VALUES (?, ?, ?, ?)`;
         // const q = `INSERT INTO submissions (email, availability, name, skill) VALUES (?, ?, ?, ?)`;
         
         // Promisify the query function

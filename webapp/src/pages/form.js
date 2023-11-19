@@ -80,7 +80,7 @@ class Form extends Component {
             setTimeout(() => {
                 this.setState({ loading: false, resolved: true });
             }, 30000);
-            axios.post('http://localhost:3000/api/submit', formData)
+            axios.post(`http://${process.env.API_HOST}:${process.env.API_PORT}/api/submit`, formData)
             .then((response) => {
                 console.log("recieved a response from /submit");
                 // Handle response...
